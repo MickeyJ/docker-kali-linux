@@ -1,0 +1,80 @@
+
+eval soft_orange='$FG[203]'
+eval light_purp='$FG[146]'
+eval light_grey='$FG[241]'
+eval sky_blue='$FG[033]'
+eval soft_green='$FG[145]'
+eval success_green='$FG[119]'
+eval error_red='$FG[124]'
+eval warn_yellow='$FG[222]'
+
+THM_BRACKET_COLOR="$reset_color"
+THM_TIME_COLOR="%{$light_grey%}"
+THM_NAME_COLOR="%{$light_purp%}"
+THM_PWD_COLOR="%{$sky_blue%}"
+THM_GIT_BRANCH_COLOR="%{$soft_orange%}"
+THM_GIT_CLEAN_COLOR="%{$success_green%}"
+THM_GIT_DIRTY_COLOR="%{$warn_yellow%}"
+
+THM_EXIT_CLEAN_COLOR="%{$success_green%}"
+THM_EXIT_DIRTY_COLOR="%{$error_red%}"
+
+END_ICON="• "
+#END_ICON="➭ "
+
+ZSH_THEME_GIT_PROMPT_PREFIX="$THM_BRACKET_COLOR:($THM_GIT_BRANCH_COLOR"
+ZSH_THEME_GIT_PROMPT_SUFFIX="$THM_BRACKET_COLOR "
+ZSH_THEME_GIT_PROMPT_DIRTY=" $THM_GIT_DIRTY_COLOR✗$THM_BRACKET_COLOR)"
+ZSH_THEME_GIT_PROMPT_CLEAN=" $THM_GIT_CLEAN_COLOR✓$THM_BRACKET_COLOR)"
+
+HOME_DIR="home"
+USER_NAME=${USER}
+
+if [ -z "$USER" ]
+then
+    USER_NAME=${USERNAME}
+fi
+
+
+_getTime() {
+    echo $(date +"%I:%M:%S")
+}
+_getLocation() {
+#    echo "$(echo $PWD | sed -e "s/\/${HOME_DIR}\/${USER_NAME}/~/g")"
+	echo '%c'
+}
+#_git_prompt_info() {
+#    ref=$(git symbolic-ref HEAD 2> /dev/null) || return
+#    echo "$(parse_git_dirty)$ZSH_THEME_GIT_PROMPT_PREFIX$THM_GIT_BRANCH_COLOR$(current_branch)"
+#}
+_get_end(){
+#		local ret_status="%(?:%{$fg_bold[green]%}➜ :%{$fg_bold[red]%}➜ )"
+		local ret_status="%(?.${THM_EXIT_CLEAN_COLOR}.${THM_EXIT_DIRTY_COLOR})${END_ICON}"
+    echo ${ret_status}
+}
+
+
+_spacer(){
+    echo "${reset_color} "
+}
+_time(){
+    echo "$THM_TIME_COLOR$(_getTime)"
+}
+_username(){
+    echo "$THM_NAME_COLOR$USER_NAME - "
+}
+_location(){
+    echo "[$THM_PWD_COLOR$(_getLocation)${reset_color}]"
+}
+_git(){
+    echo "$(git_prompt_info)"
+}
+_end(){
+    echo "$(_get_end)${reset_color}"
+}
+
+
+
+PROMPT='
+$(_time)$(_spacer)$(_location)$(_git)
+$(_end)'
